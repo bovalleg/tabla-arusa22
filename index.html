@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Tabla ARUSA en Vivo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
+    th, td { padding: 10px; border: 1px solid #ccc; text-align: center; font-size: 14px; }
+    th { background-color: #00467f; color: white; }
+    tr:nth-child(even) { background-color: #f2f2f2; }
+    img { border-radius: 50%; vertical-align: middle; margin-right: 6px; }
+    .team-name { text-align: left; }
+    .highlight { font-weight: bold; background-color: #e8f4ff; }
+  </style>
+</head>
+<body>
+  <h2>Tabla de Posiciones - ARUSA</h2>
+  <table id="tabla">
+    <thead>
+      <tr>
+        <th>P</th>
+        <th>Nombre</th>
+        <th>Pts</th>
+        <th>PJ</th>
+        <th>PG</th>
+        <th>PE</th>
+        <th>PP</th>
+        <th>F</th>
+        <th>C</th>
+        <th>DIF</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const URL_JSON = "https://bovalleg.github.io/tabla-arusa21/tabla_arusa.json";
+
+    fetch(URL_JSON)
+      .then(res => res.json())
+      .then(data => {
+        const tbody = document.querySelector("#tabla tbody");
+        data.forEach(equipo => {
+          const tr = document.createElement("tr");
+          if (equipo.nombre.includes("Tabancura")) tr.classList.add("highlight");
+
+          tr.innerHTML = `
+            <td>${equipo.posicion}</td>
+            <td class="team-name"><img src="${equipo.escudo}" alt="${equipo.nombre}">${equipo.nombre}</td>
+            <td>${equipo.puntos}</td>
+            <td>${equipo.pj}</td>
+            <td>${equipo.pg}</td>
+            <td>${equipo.pe}</td>
+            <td>${equipo.pp}</td>
+            <td>${equipo.f}</td>
+            <td>${equipo.c}</td>
+            <td>${equipo.dif}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      })
+      .catch(err => {
+        document.getElementById("tabla").outerHTML = "<p>Error al cargar datos de la tabla.</p>";
+        console.error("Error cargando tabla ARUSA:", err);
+      });
+  </script>
+</body>
+</html>
