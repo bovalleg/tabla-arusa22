@@ -1,0 +1,40 @@
+name: Actualizar Tabla ARUSA cada 30 minutos
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'  # Ejecutar cada 30 minutos
+  workflow_dispatch:       # También permite ejecución manual
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Permitir push al repo
+
+    steps:
+    - name: Clonar repositorio
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 1
+
+    - name: Configurar Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Instalar dependencias
+      run: |
+        pip install --upgrade pip
+        pip install requests beautifulsoup4
+
+    - name: Ejecutar script
+      run: python scraper_tabla_arusa.py
+
+    - name: Commit y push si hubo cambios
+      run: |
+        git config user.name "github-actions"
+        git config user.email "github-actions@github.com"
+        git add tabla_arusa.json || true
+        git diff --cached --quiet || git commit -m "Actualiza tabla automáticamente"
+        git push
+
