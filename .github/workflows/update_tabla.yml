@@ -8,7 +8,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write
+      
     steps:
     - name: Clonar repositorio
       uses: actions/checkout@v3
